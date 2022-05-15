@@ -27,10 +27,14 @@ dexcom = pydexcom.Dexcom(_USERNAME, _PASSWORD)
 
 while True:
     bg = dexcom.get_current_glucose_reading()
+    if not bg:
+        # If the sensor hasn't sent data to Dexcom, this call will return None.
+        pause.minutes(5)
+        continue
     logging.info("Glucose reading: %s, trend: %s, time: %s",
-                bg.mg_dl, bg.trend_description, bg.time)
+                 bg.mg_dl, bg.trend_description, bg.time)
 
-    if bg.trend in (1,2,6,7):
+    if bg.trend in (1, 2, 6, 7):
         note = apprise.Apprise()
         note.add(_NOTIFICATION)
         note.notify(
