@@ -16,6 +16,7 @@ Markdown==3.3.7
 mccabe==0.7.0
 multidict==6.0.2
 oauthlib==3.2.0
+pause==0.3
 platformdirs==2.5.2
 pydexcom==0.2.3
 pylint==2.13.9
