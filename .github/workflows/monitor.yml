@@ -1,4 +1,4 @@
-name: Dexcom Montior
+name: Dexcom Monitor
 
 on:
   workflow_dispatch:
