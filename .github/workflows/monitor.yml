@@ -26,7 +26,7 @@ jobs:
     - name: Run Monitor
       env:
         TZ: America/New_York
-        DISPLAY_NAME: "Joe's"
+        DISPLAY_NAME: ${{ secrets.DISPLAY_NAME }}
         DEXCOM_USERNAME: ${{ secrets.DEXCOM_USERNAME }}
         DEXCOM_PASSWORD: ${{ secrets.DEXCOM_PASSWORD }}
         NOTIFICATION_URI: ${{ secrets.NOTIFICATION_URI }}
