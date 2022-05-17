@@ -24,6 +24,7 @@ _PASSWORD = os.environ['DEXCOM_PASSWORD']
 _NOTIFICATION = os.environ['NOTIFICATION_URI']
 
 dexcom = pydexcom.Dexcom(_USERNAME, _PASSWORD)
+last_reading_notified = False
 
 while True:
     bg = dexcom.get_current_glucose_reading()
@@ -34,15 +35,17 @@ while True:
     logging.info("Glucose reading: %s, trend: %s, time: %s",
                  bg.mg_dl, bg.trend_description, bg.time)
 
-    if bg.trend in (1, 2, 6, 7):
+    if last_reading_notified or bg.trend in (1, 2, 6, 7):
+        last_reading_notified = True
         note = apprise.Apprise()
         note.add(_NOTIFICATION)
         note.notify(
             body=f"{_DISPLAY_NAME} glucose is {bg.trend_description} at {bg.mg_dl}"
         )
-        pause.hours(1)
     else:
-        next_check = bg.time + datetime.timedelta(minutes=5, seconds=30)
-        if next_check < datetime.datetime.now():
-            next_check = datetime.datetime.now() + datetime.timedelta(minutes=1)
-        pause.until(next_check)
+        last_reading_notified = False
+
+    next_check = bg.time + datetime.timedelta(minutes=5, seconds=30)
+    if next_check < datetime.datetime.now():
+        next_check = datetime.datetime.now() + datetime.timedelta(minutes=1)
+    pause.until(next_check)
