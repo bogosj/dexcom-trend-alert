@@ -42,7 +42,8 @@ while True:
         note.notify(
             body=f"{_DISPLAY_NAME} glucose is {bg.trend_description} at {bg.mg_dl}"
         )
-    else:
+
+    if bg.trend not in (1, 2, 6, 7):
         last_reading_notified = False
 
     next_check = bg.time + datetime.timedelta(minutes=5, seconds=30)
