@@ -25,6 +25,8 @@ _NOTIFICATION = os.environ['NOTIFICATION_URI']
 
 dexcom = pydexcom.Dexcom(_USERNAME, _PASSWORD)
 last_reading_notified = False
+os.environ['GITHUB_STEP_SUMMARY'] = '| Glucose | Trend |\n'
+os.environ['GITHUB_STEP_SUMMARY'] += '| --- | --- |'
 
 while True:
     bg = dexcom.get_current_glucose_reading()
@@ -34,6 +36,7 @@ while True:
         continue
     logging.info("Glucose reading: %s, trend: %s, time: %s",
                  bg.mg_dl, bg.trend_description, bg.time)
+    os.environ['GITHUB_STEP_SUMMARY'] += f'| {bg.mg_dl} | {bg.trend_arrow} |\n'
 
     if last_reading_notified or bg.trend in (1, 2, 6, 7):
         last_reading_notified = True
