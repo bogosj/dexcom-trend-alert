@@ -26,9 +26,11 @@ _NOTIFICATION = os.environ['NOTIFICATION_URI']
 dexcom = pydexcom.Dexcom(_USERNAME, _PASSWORD)
 last_reading_notified = False
 
+
 def add_to_summary(s):
     with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
         f.write(s)
+
 
 add_to_summary('| Glucose | Trend | Time |\n')
 add_to_summary('| ------- | ----- | ---- |\n')
