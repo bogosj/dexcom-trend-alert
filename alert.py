@@ -2,6 +2,8 @@ import argparse
 import datetime
 import logging
 import os
+import socket
+import urllib.request
 
 import apprise
 import pause
@@ -22,6 +24,7 @@ _DISPLAY_NAME = os.environ['DISPLAY_NAME']
 _USERNAME = os.environ['DEXCOM_USERNAME']
 _PASSWORD = os.environ['DEXCOM_PASSWORD']
 _NOTIFICATION = os.environ['NOTIFICATION_URI']
+_HEALTHCHECK_URI = os.environ['HEALTHCHECK_URI']
 
 dexcom = pydexcom.Dexcom(_USERNAME, _PASSWORD)
 last_reading_notified = False
@@ -59,4 +62,9 @@ while True:
     next_check = bg.time + datetime.timedelta(minutes=5, seconds=30)
     if next_check < datetime.datetime.now():
         next_check = datetime.datetime.now() + datetime.timedelta(minutes=1)
+    try:
+        urllib.request.urlopen(_HEALTHCHECK_URI, timeout=10)
+    except socket.error as e:
+        # Log ping failure here...
+        logging.info("Ping failed: %s" % e)
     pause.until(next_check)

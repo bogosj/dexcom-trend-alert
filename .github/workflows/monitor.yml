@@ -25,6 +25,7 @@ jobs:
         DEXCOM_USERNAME: ${{ secrets.DEXCOM_USERNAME }}
         DEXCOM_PASSWORD: ${{ secrets.DEXCOM_PASSWORD }}
         NOTIFICATION_URI: ${{ secrets.NOTIFICATION_URI }}
+        HEALTHCHECK_URI: ${{ secrets.HEALTHCHECK_URI }}
       run: |
         python -m venv env
         source env/bin/activate
