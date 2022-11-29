@@ -34,11 +34,18 @@ def add_to_summary(s):
     with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
         f.write(s)
 
+def ping_healthcheck():
+    try:
+        urllib.request.urlopen(_HEALTHCHECK_URI, timeout=10)
+    except socket.error as e:
+        # Log ping failure here...
+        logging.info("Ping failed: %s" % e)
 
 add_to_summary('| Glucose | Trend | Time |\n')
 add_to_summary('| ------- | ----- | ---- |\n')
 
 while True:
+    ping_healthcheck()
     bg = dexcom.get_current_glucose_reading()
     if not bg:
         # If the sensor hasn't sent data to Dexcom, this call will return None.
@@ -62,9 +69,4 @@ while True:
     next_check = bg.time + datetime.timedelta(minutes=5, seconds=30)
     if next_check < datetime.datetime.now():
         next_check = datetime.datetime.now() + datetime.timedelta(minutes=1)
-    try:
-        urllib.request.urlopen(_HEALTHCHECK_URI, timeout=10)
-    except socket.error as e:
-        # Log ping failure here...
-        logging.info("Ping failed: %s" % e)
     pause.until(next_check)
