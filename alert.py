@@ -20,7 +20,6 @@ args = parser.parse_args()
 
 logging.basicConfig(level=args.loglevel.upper())
 
-_DISPLAY_NAME = os.environ['DISPLAY_NAME']
 _USERNAME = os.environ['DEXCOM_USERNAME']
 _PASSWORD = os.environ['DEXCOM_PASSWORD']
 _NOTIFICATION = os.environ['NOTIFICATION_URI']
@@ -60,7 +59,7 @@ while True:
         note = apprise.Apprise()
         note.add(_NOTIFICATION)
         note.notify(
-            body=f"{_DISPLAY_NAME} glucose is {bg.trend_description} at {bg.mg_dl}"
+            body=f"{bg.mg_dl} {bg.trend_arrow}"
         )
 
     if bg.trend not in (1, 2, 6, 7):
