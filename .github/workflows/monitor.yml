@@ -1,4 +1,4 @@
-name: Dexcom Monitor
+name: Dexcom Mon
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron: '42 * * * *'
 
 concurrency:
-  group: dexcom-monitor
+  group: dexcom-monitor-2
   cancel-in-progress: true
 
 jobs:
