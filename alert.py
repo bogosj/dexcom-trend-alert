@@ -50,8 +50,8 @@ while True:
         pause.minutes(5)
         continue
     logging.info("Glucose reading: %s, trend: %s, time: %s",
-                 bg.mg_dl, bg.trend_description, bg.time)
-    add_to_summary(f'| {bg.mg_dl} | {bg.trend_arrow} | {bg.time} |\n')
+                 bg.mg_dl, bg.trend_description, bg.datetime)
+    add_to_summary(f'| {bg.mg_dl} | {bg.trend_arrow} | {bg.datetime} |\n')
 
     if last_reading_notified or bg.trend in (1, 2, 6, 7):
         last_reading_notified = True
@@ -64,7 +64,7 @@ while True:
     if bg.trend not in (1, 2, 6, 7):
         last_reading_notified = False
 
-    next_check = bg.time + datetime.timedelta(minutes=5, seconds=30)
+    next_check = bg.datetime + datetime.timedelta(minutes=5, seconds=30)
     if next_check < datetime.datetime.now():
         next_check = datetime.datetime.now() + datetime.timedelta(minutes=1)
     ping_healthcheck()
