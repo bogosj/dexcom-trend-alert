@@ -1,16 +1,13 @@
 import argparse
 import datetime
-import http.client
 import logging
 import os
 import socket
 import urllib.request
 
 import apprise
-import backoff
 import pause
 import pydexcom
-import requests
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -36,7 +33,6 @@ def add_to_summary(s):
     with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
         f.write(s)
 
-
 def ping_healthcheck():
     try:
         urllib.request.urlopen(_HEALTHCHECK_URI, timeout=10)
@@ -44,28 +40,19 @@ def ping_healthcheck():
         # Log ping failure here...
         logging.info("Ping failed: %s" % e)
 
-
 add_to_summary('| Glucose | Trend | Time |\n')
 add_to_summary('| ------- | ----- | ---- |\n')
 
-
-@backoff.on_exception(
-    backoff.expo,
-    (requests.exceptions.ReadTimeout, http.client.RemoteDisconnected),
-    max_time=60)
-def get_bg_reading():
-    return dexcom.get_current_glucose_reading()
-
-
 while True:
-    bg = get_bg_reading()
+    ping_healthcheck()
+    bg = dexcom.get_current_glucose_reading()
     if not bg:
         # If the sensor hasn't sent data to Dexcom, this call will return None.
         pause.minutes(5)
         continue
     logging.info("Glucose reading: %s, trend: %s, time: %s",
-                 bg.mg_dl, bg.trend_description, bg.datetime)
-    add_to_summary(f'| {bg.mg_dl} | {bg.trend_arrow} | {bg.datetime} |\n')
+                 bg.mg_dl, bg.trend_description, bg.time)
+    add_to_summary(f'| {bg.mg_dl} | {bg.trend_arrow} | {bg.time} |\n')
 
     if last_reading_notified or bg.trend in (1, 2, 6, 7):
         last_reading_notified = True
@@ -78,8 +65,7 @@ while True:
     if bg.trend not in (1, 2, 6, 7):
         last_reading_notified = False
 
-    next_check = bg.datetime + datetime.timedelta(minutes=5, seconds=30)
+    next_check = bg.time + datetime.timedelta(minutes=5, seconds=30)
     if next_check < datetime.datetime.now():
         next_check = datetime.datetime.now() + datetime.timedelta(minutes=1)
-    ping_healthcheck()
     pause.until(next_check)
