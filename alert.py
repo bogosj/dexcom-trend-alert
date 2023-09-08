@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import http.client
 import logging
 import os
 import socket
@@ -35,6 +36,7 @@ def add_to_summary(s):
     with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
         f.write(s)
 
+
 def ping_healthcheck():
     try:
         urllib.request.urlopen(_HEALTHCHECK_URI, timeout=10)
@@ -42,12 +44,18 @@ def ping_healthcheck():
         # Log ping failure here...
         logging.info("Ping failed: %s" % e)
 
+
 add_to_summary('| Glucose | Trend | Time |\n')
 add_to_summary('| ------- | ----- | ---- |\n')
 
-@backoff.on_exception(backoff.expo, requests.exceptions.ReadTimeout, max_time=60)
+
+@backoff.on_exception(
+    backoff.expo,
+    (requests.exceptions.ReadTimeout, http.client.RemoteDisconnected),
+    max_time=60)
 def get_bg_reading():
     return dexcom.get_current_glucose_reading()
+
 
 while True:
     bg = get_bg_reading()
