@@ -6,8 +6,10 @@ import socket
 import urllib.request
 
 import apprise
+import backoff
 import pause
 import pydexcom
+import requests
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -43,8 +45,12 @@ def ping_healthcheck():
 add_to_summary('| Glucose | Trend | Time |\n')
 add_to_summary('| ------- | ----- | ---- |\n')
 
+@backoff.on_exception(backoff.expo, requests.exceptions.ReadTimeout, max_time=60)
+def get_bg_reading():
+    return dexcom.get_current_glucose_reading()
+
 while True:
-    bg = dexcom.get_current_glucose_reading()
+    bg = get_bg_reading()
     if not bg:
         # If the sensor hasn't sent data to Dexcom, this call will return None.
         pause.minutes(5)
