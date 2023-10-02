@@ -16,15 +16,11 @@ mccabe==0.7.0
     # via pylint
 platformdirs==3.10.0
     # via pylint
-pylint==2.17.6
+pylint==2.17.7
     # via -r dev-requirements.in
 pylint-venv==3.0.2
     # via -r dev-requirements.in
-tomli==2.0.1
-    # via pylint
 tomlkit==0.12.1
     # via pylint
-typing-extensions==4.8.0
-    # via astroid
 wrapt==1.15.0
     # via astroid
