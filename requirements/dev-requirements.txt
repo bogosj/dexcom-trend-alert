@@ -14,7 +14,7 @@ mccabe==0.7.0
     # via pylint
 platformdirs==3.10.0
     # via pylint
-pylint==3.0.0
+pylint==3.0.1
     # via -r dev-requirements.in
 pylint-venv==3.0.2
     # via -r dev-requirements.in
