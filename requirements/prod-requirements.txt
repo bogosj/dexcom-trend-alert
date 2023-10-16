@@ -4,7 +4,7 @@
 #
 #    pip-compile prod-requirements.in
 #
-apprise==1.5.0
+apprise==1.6.0
     # via -r prod-requirements.in
 certifi==2023.7.22
     # via
@@ -16,7 +16,7 @@ click==8.1.7
     # via apprise
 idna==3.4
     # via requests
-markdown==3.4.4
+markdown==3.5
     # via apprise
 oauthlib==3.2.2
     # via requests-oauthlib
@@ -33,5 +33,5 @@ requests==2.31.0
     #   requests-oauthlib
 requests-oauthlib==1.3.1
     # via apprise
-urllib3==2.0.5
+urllib3==2.0.6
     # via requests
