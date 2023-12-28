@@ -4,7 +4,7 @@
 #
 #    pip-compile prod-requirements.in
 #
-apprise==1.6.0
+apprise==1.7.0
     # via -r prod-requirements.in
 certifi==2023.7.22
     # via
