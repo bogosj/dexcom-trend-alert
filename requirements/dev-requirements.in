@@ -1,3 +1,0 @@
--c prod-requirements.txt
-pylint
-pylint-venv
