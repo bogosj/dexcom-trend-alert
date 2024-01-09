@@ -8,6 +8,7 @@ import urllib.request
 import apprise
 import pause
 import pydexcom
+import retry
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -43,8 +44,12 @@ def ping_healthcheck():
 add_to_summary('| Glucose | Trend | Time |\n')
 add_to_summary('| ------- | ----- | ---- |\n')
 
+@retry.retry(Exception, tries=20, delay=1, backoff=2, max_delay=10)
+def call_dexcom():
+    return dexcom.get_current_glucose_reading()
+
 while True:
-    bg = dexcom.get_current_glucose_reading()
+    bg = call_dexcom()
     if not bg:
         # If the sensor hasn't sent data to Dexcom, this call will return None.
         pause.minutes(5)
