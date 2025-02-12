@@ -3,7 +3,7 @@ name: Dexcom Mon
 on:
   workflow_dispatch:
   schedule:
-    - cron: '14 * * * *'
+    - cron: '42 * * * *'
 
 concurrency:
   group: dexcom-monitor
