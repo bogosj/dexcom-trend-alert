@@ -1,4 +1,4 @@
-# dexcom-alert-trend
+# dexcom-trend-alert
 
 This script will run forever, polling the Dexcom API roughly every five minutes
 to check for either one or two trend arrows up or down. When found, the script
